@@ -12,20 +12,22 @@ git-pair() {
   local pair
   local new_message
 
-  pair=$(cat $HOME/.git-pair | grep "${pair_alias}" | cut -d" " -f2-)
-  prev_message=$(git log --format=%B -n -1)
+  pair=$(
+    command grep "${pair_alias}" "${HOME}/.git-pair" \
+    | command cut -d" " -f2-
+  )
+  prev_message=$(command git log --format=%B --max-count=1)
   new_message="${prev_message}"$'\n\nCo-authored-by: '"${pair}"
-  git commit --amend --message "$new_message"
+  command git commit --amend --message "$new_message"
   # undo-all -- search for all the Co-authored-by and remove
   # undo -- search for the last Co-authored-by and remove
 }
 
 _git_pair_completion() {
-  local command="$1"
-  local word="$2"
-  local options=$(cat $HOME/.git-pair | awk '{print $1}')
+  local options
+  local word="${2}"
+  options=$(awk '{print $1}' "${HOME}/.git-pair")
   COMPREPLY=($(compgen -W "${options}" -- ${word}))
-  return 0
 }
 
 complete -F _git_pair_completion git-pair
