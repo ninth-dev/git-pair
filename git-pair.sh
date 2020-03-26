@@ -5,22 +5,44 @@ git-pair() {
     echo "Usage: git-pair <alias>"
     return 1
   fi
-  # check if it's a git repo
-  # append the previous commit with the pair name and email
-  # if there's exist pair append the previous commit with the pair name and email
-  local pair_alias="${1}"
+
   local pair
+  local pair_alias="${1}"
+  local prev_message
+  local prev_message_without_co_authors
+  local co_authors
+  local new_co_author
   local new_message
 
   pair=$(
     command grep "${pair_alias}" "${HOME}/.git-pair" \
-    | command cut -d" " -f2-
+    | cut -d" " -f2-
   )
-  prev_message=$(command git log --format=%B --max-count=1)
-  new_message="${prev_message}"$'\n\nCo-authored-by: '"${pair}"
-  command git commit --amend --message "$new_message"
-  # undo-all -- search for all the Co-authored-by and remove
-  # undo -- search for the last Co-authored-by and remove
+
+  prev_message=$(git log --format=%B --max-count=1)
+
+  prev_message_without_co_authors=$(
+    echo "$prev_message" \
+    | command grep -v "Co-authored-by: "
+  )
+
+  new_co_author="Co-authored-by: ${pair}"
+
+  co_authors=$(
+    echo "$prev_message" \
+    | command grep "Co-authored-by: " \
+    | cat - <(echo "$new_co_author") \
+    | LC_ALL=c sort -u
+  )
+
+  new_message="${prev_message_without_co_authors}"$'\n\n'"${co_authors}"
+
+  if [ "$new_message" != "$prev_message" ]; then
+    git commit --amend --message "$new_message" --quiet
+    echo "🍐'd with ${pair}"
+  else
+    echo "Already 🍐'd with ${pair}"
+  fi
 }
 
 _git_pair_completion() {
