@@ -4,6 +4,8 @@
 
 Acknowledge **everyone** that contributes to the commit.
 
+See [example](https://github.com/ninth-dev/git-pair/commit/0ee2f1f2b47033363534d8fda8b25e13f538cd67) with many authors.
+
 ## Features
 - Amend previous commit message by appending `Co-authored-by: ..`
   - See [here](https://help.github.com/en/github/committing-changes-to-your-project/creating-a-commit-with-multiple-authors#creating-co-authored-commits-on-the-command-line)
@@ -31,7 +33,7 @@ echo "john-smith John Smith <john.smith@example.com>"
 echo "jane-doe Jane Doe <jane.doe@example.com>"
 echo "alice Alice <alice@example.com>"
 echo "bob Bob <bob@example.com>"
-) > $HOME/.git-pair
+) >> $HOME/.git-pair
 ```
 
 **NB:** You can just open the file `$HOME/.git-pair` and use your favourite editor :)
