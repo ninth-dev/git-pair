@@ -12,37 +12,37 @@ See [example](https://github.com/ninth-dev/git-pair/commit/0ee2f1f2b47033363534d
 - Autocompletion `git-pair <TAB><TAB>`
 - Multiple Co-authors
 - Idempotent
-  - Co-authors will be unqiue and sorted alphabetically
+  - Co-authors will be unique and sorted alphabetically
 
 ## Installation
 
 1. Clone the repo
 
-```sh
-git clone https://github.com/ninth-dev/git-pair.git
-```
+    ```sh
+    git clone https://github.com/ninth-dev/git-pair.git
+    ```
 
 2. Create an file `$HOME/.git-pair` and add your team mates
 
-e.g.
+    e.g.
 
-```sh
-# Follow the pattern: alias name <email>
-(
-echo "john-smith John Smith <john.smith@example.com>"
-echo "jane-doe Jane Doe <jane.doe@example.com>"
-echo "alice Alice <alice@example.com>"
-echo "bob Bob <bob@example.com>"
-) >> $HOME/.git-pair
-```
+    ```sh
+    # Follow the pattern: alias name <email>
+    (
+    echo "john-smith John Smith <john.smith@example.com>"
+    echo "jane-doe Jane Doe <jane.doe@example.com>"
+    echo "alice Alice <alice@example.com>"
+    echo "bob Bob <bob@example.com>"
+    ) > $HOME/.git-pair
+    ```
 
-**NB:** You can just open the file `$HOME/.git-pair` and use your favourite editor :)
+    **NB:** You can just open the file `$HOME/.git-pair` and use your favourite editor :)
 
 3. Source the `git-pair` script to your shell startup file (e.g. `.zshrc`, `.bashrc`)
 
-```sh
-source <PATH_TO_GIT_PAIR>/git-pair.sh
-```
+    ```sh
+    source <PATH_TO_GIT_PAIR>/git-pair.sh
+    ```
 
 4. Restart your shell or source your startup file.
 
