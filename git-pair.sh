@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # XXX - should use bash scripts instead of functions ??
 # con: need to put script into PATH
 # pro: more portable
@@ -32,6 +30,9 @@ __git-pair-parse-pair() {
   fi
 }
 
+# XXX - wishlist
+# - take a unlimited number of pairs
+# - ability to reword specific commits only
 # (commit-sha, pair) -> ()
 __git-pair-from-commit-sha() {
   local pair
@@ -62,9 +63,10 @@ __git-pair-from-commit-sha() {
     GIT_EDITOR="${__GIT_PAIR_HOME}/editor.sh" \
     GIT_SEQUENCE_EDITOR="sed -i -e 's/pick/reword/g'" \
     git rebase \
+      --autostash \
       --interactive \
       --committer-date-is-author-date \
-      --quiet "${commit_sha:-"HEAD"}"~1;
+      --quiet "${commit_sha}"~1;
   then
     echo "🍐'd with ${pair}"
     return 0
@@ -81,33 +83,36 @@ __git-pair-from-commit-sha() {
 }
 
 alias git-pair='__git-pair-from-commit-sha "HEAD"'
-
-# XXX - change to aliases ? is it possible ?
-git-pair-unmerged() {
-  local unmerged_commit_sha
-  unmerged_commit_sha=$(
-    git cherry master --abbrev \
-    | awk '{print $2}' \
-    | head -n 1
-  )
-  __git-pair-from-commit-sha "${unmerged_commit_sha:-"HEAD"}" "${@}"
-}
+alias git-pair-unmerged="__git-pair-from-commit-sha \"\$(git cherry master --abbrev | awk '{print \$2}' | head -n 1)\""
+alias git-pair-from='__git-pair-from-commit-sha'
 
 _git_pair_completion() {
   local options
   local word="${2}"
+
   ## XXX - should look into zsh only completion
-  ## XXX - stop completion if it's not in a repo
   if ! git rev-parse --git-dir > /dev/null 2>&1; then
     COMPREPLY=()
     return 0
   fi
 
-  ## XXX - have a look how to populate this with
-  ## git shortlog -sne | cut -f2- | awk '{print $0}'
-  options=$(awk '{print $1}' "${HOME}/.git-pair" | command grep -v "^#")
-  COMPREPLY=($(compgen -W "${options}" -- ${word}))
+  case "${COMP_CWORD}" in
+    1)
+      # get the last 10 commits abbrev hash
+      options=$(git log --format="%h")
+      COMPREPLY=($(compgen -W "${options}" -- ${word}))
+      ;;
+    2)
+      ## XXX - have a look how to populate this with
+      ## git shortlog -sne | cut -f2- | awk '{print $0}'
+      options=$(awk '{print $1}' "${HOME}/.git-pair" | command grep -v "^#")
+      COMPREPLY=($(compgen -W "${options}" -- ${word}))
+      ;;
+    *)
+      ## default case
+      ## XXX - maybe support multiple pairs later
+      ;;
+  esac
 }
 
 complete -F _git_pair_completion __git-pair-from-commit-sha
-complete -F _git_pair_completion git-pair-unmerged
