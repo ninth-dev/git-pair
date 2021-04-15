@@ -54,8 +54,8 @@ __git-pair-from-commit-sha() {
   current_head="$(git rev-parse --short HEAD)"
 
   echo '---------------'
-  echo 'To revert:'
-  echo "  \$ git reset --hard ${current_head}"
+  echo 'To undo:'
+  echo "  \$ git reset ${current_head}"
   echo '---------------'
 
   if
@@ -82,8 +82,12 @@ __git-pair-from-commit-sha() {
   #   HEAD~1..HEAD
 }
 
+__git-pair-main-branch() {
+  [[ -n "$(git branch --list main)" ]] && echo "main" || echo "master"
+}
+
 alias git-pair='__git-pair-from-commit-sha "HEAD"'
-alias git-pair-unmerged="__git-pair-from-commit-sha \"\$(git cherry master --abbrev | awk '{print \$2}' | head -n 1)\""
+alias git-pair-unmerged="__git-pair-from-commit-sha \"\$(git cherry \$(__git-pair-main-branch) --abbrev | awk '{print \$2}' | head -n 1)\""
 alias git-pair-from='__git-pair-from-commit-sha'
 
 _git_pair_completion() {
@@ -103,14 +107,13 @@ _git_pair_completion() {
       COMPREPLY=($(compgen -W "${options}" -- ${word}))
       ;;
     2)
-      ## XXX - have a look how to populate this with
-      ## git shortlog -sne | cut -f2- | awk '{print $0}'
+      # XXX - have a look how to populate this with
+      # git shortlog -sne | cut -f2- | awk '{print $0}'
       options=$(awk '{print $1}' "${HOME}/.git-pair" | command grep -v "^#")
       COMPREPLY=($(compgen -W "${options}" -- ${word}))
       ;;
     *)
-      ## default case
-      ## XXX - maybe support multiple pairs later
+      # default case
       ;;
   esac
 }

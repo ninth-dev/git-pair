@@ -6,8 +6,9 @@ Acknowledge **everyone** that contributes to the commit.
 
 See [example](https://github.com/ninth-dev/git-pair/commit/0ee2f1f2b47033363534d8fda8b25e13f538cd67) with many authors.
 
+
 ## Features
-- Amend previous commit message by appending `Co-authored-by: ..`
+- Reword previous X commits by appending `Co-authored-by: ..` in commit message
   - See [here](https://help.github.com/en/github/committing-changes-to-your-project/creating-a-commit-with-multiple-authors#creating-co-authored-commits-on-the-command-line)
 - Autocompletion `git-pair <TAB><TAB>`
 - Multiple Co-authors
@@ -41,6 +42,10 @@ See [example](https://github.com/ninth-dev/git-pair/commit/0ee2f1f2b47033363534d
 3. Source the `git-pair` script to your shell startup file (e.g. `.zshrc`, `.bashrc`)
 
     ```sh
+    # For ZSH users, if the auto-completion is not working.
+    # Try uncomment the following two lines:
+    # autoload -Uz compinit && compinit
+    # autoload -Uz bashcompinit && bashcompinit
     source <PATH_TO_GIT_PAIR>/git-pair.sh
     ```
 
@@ -53,7 +58,15 @@ After committing and you want to add your pair (co-author) in.
 ```sh
 $ git commit --message "nit: some random bugfix"
 $ git-pair john-smith
+---------------
+To undo:
+  $ git reset 1f49b92
+---------------
+[detached HEAD fc29653] refactor
+ Date: Thu Apr 1 22:00:36 2021 +1100
+ 1 file changed, 2 insertions(+)
 🍐'd with John Smith <john.smith@example.com>
+
 ```
 
 This will amend the previous commit message :
@@ -69,7 +82,15 @@ Co-authored-by: John Smith <john.smith@example.com>
 
 ```sh
 $ git-pair jane-doe
+---------------
+To undo:
+  $ git reset fc29653
+---------------
+[detached HEAD 2b2e1d4] refactor
+ Date: Thu Apr 1 22:00:36 2021 +1100
+ 1 file changed, 2 insertions(+)
 🍐'd with Jane Doe <jane.doe@example.com>
+
 $ git log -1
 .
 .
@@ -77,28 +98,19 @@ Co-authored-by: Jane Doe <jane.doe@example.com>
 Co-authored-by: John Smith <john.smith@example.com>
 ```
 
-## Mob programming?
+## Basic Usage
 
-You could also simply just create an alias for your mob-programming sessions.
+Since `v2`, `git-pair` is powered with aliases. The following aliases are added from the installation:
 
-```sh
-alias git-mob='git-pair john-smith && git-pair jane-doe && git-pair alice && git-pair bob'
-```
+- `git-pair`: amend the previous commit
 
-```sh
-$ git-mob
-🍐'd with John Smith <john.smith@example.com>
-🍐'd with Jane Doe <jane.doe@example.com>
-🍐'd with Alice <alice@example.com>
-🍐'd with Bob <bob@example.com>
+   e.g. `$ git-pair ninth-dev`
 
-$ git log -1
-.
-.
-Co-authored-by: Alice <alice@example.com>
-Co-authored-by: Bob <bob@example.com>
-Co-authored-by: Jane Doe <jane.doe@example.com>
-Co-authored-by: John Smith <john.smith@example.com>
+- `git-pair-unmerged`: amend the previous X commits that have not been merged to the local master/main branch yet.
 
-# NB: Co-authors are sorted alphabetically
-```
+    e.g. `$ git-pair-unmerged ninth-dev`
+
+- `git-pair-from`: rebase from a specifc commit hash (inclusive)
+
+    e.g. `$ git-pair-from 1e518f ninth-dev`
+
