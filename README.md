@@ -1,19 +1,18 @@
 # git-pair 🍐
 
-`git-pair` is a bash script that enables you to simply add your co-authors to your commits.
-
+`git-pair` enables you to simply add your co-authors to your commits.
 Acknowledge **everyone** that contributes to the commit.
-
 See [example](https://github.com/ninth-dev/git-pair/commit/0ee2f1f2b47033363534d8fda8b25e13f538cd67) with many authors.
 
-
 ## Features
+
 - Reword previous X commits by appending `Co-authored-by: ..` in commit message
   - See [here](https://help.github.com/en/github/committing-changes-to-your-project/creating-a-commit-with-multiple-authors#creating-co-authored-commits-on-the-command-line)
 - Autocompletion `git-pair <TAB><TAB>`
 - Multiple Co-authors
 - Idempotent
   - Co-authors will be unique and sorted alphabetically
+- No dependencies other than `git` itself
 
 ## Installation
 
@@ -106,11 +105,16 @@ Since `v2`, `git-pair` is powered with aliases. The following aliases are added 
 
    e.g. `$ git-pair ninth-dev`
 
-- `git-pair-unmerged`: amend the previous X commits that have not been merged to the local master/main branch yet.
+- `git-pair-rebase-main`: amend the previous X commits that have not been merged to the local master/main branch yet.
 
-    e.g. `$ git-pair-unmerged ninth-dev`
+    e.g. `$ git-pair-rebase-main ninth-dev`
 
-- `git-pair-from`: rebase from a specifc commit hash (inclusive)
+- `git-pair-rebase`: rebase from a specifc commit hash (inclusive)
 
-    e.g. `$ git-pair-from 1e518f ninth-dev`
+    e.g. `$ git-pair-rebase 1e518f ninth-dev`
+
+## History
+
+`git-pair` initially used `git commit --amend` to amend the previous commit message. However, it became problematic when doing several small commits and forgetting to run `git-pair`. The desire to be able to amend more than one commit message was born. In order to achieve this, it was migrated to use `git rebase --interactive` in `v2`.
+
 

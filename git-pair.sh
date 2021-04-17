@@ -34,7 +34,7 @@ __git-pair-parse-pair() {
 # - take a unlimited number of pairs
 # - ability to reword specific commits only
 # (commit-sha, pair) -> ()
-__git-pair-from-commit-sha() {
+__git-pair-rebase() {
   local pair
   local commit_sha
   local current_head
@@ -66,7 +66,7 @@ __git-pair-from-commit-sha() {
       --autostash \
       --interactive \
       --committer-date-is-author-date \
-      --quiet "${commit_sha}"~1;
+      --quiet "${commit_sha}"~1; ## XXX - consider letting ~1 to be passed in
   then
     echo "🍐'd with ${pair}"
     return 0
@@ -86,9 +86,9 @@ __git-pair-main-branch() {
   [[ -n "$(git branch --list main)" ]] && echo "main" || echo "master"
 }
 
-alias git-pair='__git-pair-from-commit-sha "HEAD"'
-alias git-pair-unmerged="__git-pair-from-commit-sha \"\$(git cherry \$(__git-pair-main-branch) --abbrev | awk '{print \$2}' | head -n 1)\""
-alias git-pair-from='__git-pair-from-commit-sha'
+alias git-pair='__git-pair-rebase "HEAD"'
+alias git-pair-rebase-main="__git-pair-rebase \"\$(git cherry \$(__git-pair-main-branch) --abbrev | awk '{print \$2}' | head -n 1)\""
+alias git-pair-rebase='__git-pair-rebase'
 
 _git_pair_completion() {
   local options
