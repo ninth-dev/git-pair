@@ -90,6 +90,7 @@ alias git-pair='__git-pair-rebase "HEAD"'
 alias git-pair-rebase-main="__git-pair-rebase \"\$(git cherry \$(__git-pair-main-branch) --abbrev | awk '{print \$2}' | head -n 1)\""
 alias git-pair-rebase='__git-pair-rebase'
 
+# XXX - move to a different file?
 _git_pair_completion() {
   local options
   local word="${2}"
@@ -117,5 +118,4 @@ _git_pair_completion() {
       ;;
   esac
 }
-
-complete -F _git_pair_completion __git-pair-from-commit-sha
+complete -F _git_pair_completion __git-pair-rebase
